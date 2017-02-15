@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.avaje.ebean:ebean-agent:8.1.1">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.avaje.ebean/ebean-agent/8.1.1/48f70f1f5df398170f04b15dd13def125015c955/ebean-agent-8.1.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.avaje.ebean/ebean-agent/8.1.1/212eec5ea074837377557409dbe483c171429672/ebean-agent-8.1.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

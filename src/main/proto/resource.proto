@@ -1,0 +1,228 @@
+syntax = "proto3";
+
+package resource;
+
+option java_multiple_files = true;
+option java_package = "cn.ymatou.ops.resource";
+option java_outer_classname = "ResourceProto";
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "validator/validator.proto";
+
+service ResourceManager {
+    rpc CreateType (Type) returns (Type) {
+        option (google.api.http) = {
+            post: "/resource/v1/type"
+            body: "*"
+        };
+    }
+
+    rpc DeleteType (Type) returns (Type) {
+        option (google.api.http) = {
+            delete: "/resource/v1/type/{name}"
+        };
+    }
+
+    rpc UpdateType (Type) returns (Type) {
+        option (google.api.http) = {
+            put: "/resource/v1/type"
+            body: "*"
+        };
+    }
+
+    rpc SearchType(Type) returns (Type) {
+        option (google.api.http) = {
+            get: "/resource/v1/type"
+        };
+    }
+    rpc CreateField (Field) returns (Field) {
+        option (google.api.http) = {
+            post: "/resource/v1/field"
+            body: "*"
+        };
+    }
+
+    rpc DeleteField (Field) returns (Field) {
+        option (google.api.http) = {
+            delete: "/resource/v1/field/{id}"
+        };
+    }
+
+    rpc UpdateField (Field) returns (Task) {
+        option (google.api.http) = {
+            put: "/resource/v1/field"
+            body: "*"
+        };
+    }
+
+    rpc DeleteValue (Field) returns (Field) {
+        option (google.api.http) = {
+            delete: "/resource/v1/value/{id}"
+        };
+    }
+
+    rpc SearchTask(Task) returns (Task) {
+        option (google.api.http) = {
+            get: "/resource/v1/task"
+        };
+    }
+
+    rpc CreateResource (Resource) returns (Resource) {
+        option (google.api.http) = {
+            post: "/resource/v1/resource"
+            body: "*"
+        };
+    }
+
+    rpc DeleteResource (Resource) returns (Resource) {
+        option (google.api.http) = {
+            delete: "/resource/v1/resource/{uuid}"
+        };
+    }
+
+    rpc UpdateResource (Resource) returns (Resource) {
+        option (google.api.http) = {
+            put: "/resource/v1/resource"
+            body: "*"
+        };
+    }
+
+    rpc SearchResource(SearchRequest) returns (PagedResourceResponse) {
+        option (google.api.http) = {
+            get: "/resource/v1/resource"
+        };
+    }
+
+    rpc SearchHistory(History) returns (PagedHistoryResponse) {
+        option (google.api.http) = {
+            get: "/resource/v1/history"
+        };
+    }
+}
+
+message Type{
+    string name = 1 [(validator.string).not_blank = true];
+    string description = 2;
+    bool locked = 3;
+    string created_user = 4;
+    string modified_user = 5;
+    repeated Field fields = 6;
+}
+
+message Field {
+    int64 id = 1;
+    int64 type_id = 2;
+    string name = 3 [(validator.string).not_blank = true];
+    string display = 4;
+    enum Field_Type {
+        INT = 0;
+        FLOAT = 1;
+        STRING = 2;
+        DATETIME = 3;
+        IP = 4;
+    }
+    string field_type = 5;
+    string default_value = 6;
+    bool is_required = 7;
+    bool is_multi = 8;
+    bool is_unique = 9;
+    string created_user = 10;
+    string modified_user = 11;
+    string type = 12;
+    string reference_type = 13;
+    string reference_field = 14;
+    string constraint_condition = 15;
+}
+
+message Task {
+    int64 id = 1;
+    enum Status {
+        R = 0;
+        S = 1;
+        F = 2;
+    }
+    Status status = 2;
+    string content = 3;
+    int64 type_id = 4;
+    string message = 5;
+    string created_user = 6;
+    string modified_user = 7;
+    string type = 8;
+}
+
+message Resource {
+    string uuid = 1;
+    string name = 2 [(validator.string).not_blank = true];
+    int64 type_model_id = 3;
+    bool indexed = 4;
+    bool deleted = 5;
+    int32 refs = 6;
+    string created_user = 7;
+    string modified_user = 8;
+    repeated Value values = 9;
+    string type = 10;
+}
+
+message Value {
+    int64 id = 1;
+    Resource resource = 2;
+    int64 field_model_id = 3;
+    string value = 4;
+    string created_user = 5;
+    string modified_user = 6;
+    string filed = 7;
+}
+
+message Reference {
+    int64 id = 1;
+    int64 source_field_id = 2;
+    int64 target_field_id = 3;
+    enum Constraint_Condition {
+        onetoone = 0;
+        onetomultiple = 1;
+        multipletoone = 2;
+        multipletomultiple = 3;
+    }
+    Constraint_Condition constraint_condition = 4;
+    string created_user = 5;
+    string modified_user = 6;
+}
+
+message History {
+    int64 id = 1;
+    int64 resource_id = 2;
+    int64 field_id = 3;
+    string value = 4;
+    string created_user = 5;
+    string modified_user = 6;
+    string resource = 7;
+    string field = 8;
+    int32 page = 9;
+    int32 size = 10;
+}
+
+message PageInfo {
+    int32 total = 1;
+    int32 pages = 2;
+    int32 size = 3;
+    int32 page = 4;
+    bool has_next = 5;
+    bool has_prev = 6;
+}
+
+message SearchRequest {
+    string query = 1;
+    int32 page = 2;
+    int32 size = 3;
+}
+
+message PagedResourceResponse {
+    PageInfo page_info = 1;
+    repeated Resource resource = 2;
+}
+
+message PagedHistoryResponse {
+    PageInfo page_info = 1;
+    repeated History history = 2;
+}

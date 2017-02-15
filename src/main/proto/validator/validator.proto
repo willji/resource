@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package validator;
+
+option java_multiple_files = true;
+option java_package = "com.ymatou.op.validator.proto";
+option java_outer_classname = "ValidatorProto";
+
+import "google/protobuf/descriptor.proto";
+
+message GeneralValidator {
+    bool required = 1;
+    bool skip = 2;
+    string message = 3;
+}
+
+message StringValidator {
+    bool not_blank = 1;
+    message Length {
+        int32 min = 1;
+        int32 max = 2;
+    }
+    Length length = 2;
+    message Pattern {
+        string regex = 1;
+        repeated string flag = 2;
+    }
+    repeated Pattern pattern = 3;
+    string message = 4;
+}
+
+message NumberValidator {
+    string min = 1;
+    string max = 2;
+    string message = 3;
+}
+
+message CollectionValidator {
+    bool not_empty = 1;
+    message Size {
+        int32 min = 1;
+        int32 max = 2;
+    }
+    Size size = 2;
+    string message = 3;
+}
+
+extend google.protobuf.FieldOptions {
+    GeneralValidator general = 50000;
+    StringValidator string = 50001;
+    NumberValidator number = 50002;
+    CollectionValidator collection = 50003;
+}
